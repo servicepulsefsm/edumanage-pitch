@@ -1,20 +1,49 @@
-# EduManage — School Management System
+# EduManage
 
-## Project Overview
-**EduManage is not a School Management System. It is a reassurance engine — a single system of record across the full school management lifecycle, from admissions to graduation, that surfaces the right insight, for the right person, at the right moment. Every parent informed, every teacher equipped, every student organized, every school accountable.**
+## EduManage. Finally, nothing is hidden.
+
+### Four Stakeholders. Four Categories. One Platform.
+
+| Stakeholder | Category | One-liner |
+|-------------|----------|-----------|
+| **School Leadership** | School Performance Intelligence | Prove and improve your school — before the market decides for you |
+| **Parent** | Parent Transparency Engine | Your child's day, growth, and the return on every fee you've paid |
+| **Teacher** | Classroom Professional Intelligence | What's actually working — for each child, every term |
+| **Student** | Lifelong Learner Record | From first day of school to first day of work |
+
+---
 
 ### How It Works — Four Layers, One System
 
-**Layer 1 — System of Record.** Everything starts here. Admissions, attendance, grades, fees, timetables, communications, conduct, sports — the complete school operation captured in one place. This is what the school runs on daily. It replaces fragmented spreadsheets, paper registers, and personal WhatsApp groups with a single source of truth that every downstream layer draws from.
+**Layer 1 — System of Record.** Admissions, attendance, grades, fees, timetables, communications, conduct, sports — the complete school operation in one place. Replaces fragmented spreadsheets, paper registers, and WhatsApp groups with a single source of truth.
 
-**Layer 2 — Contextual Reassurance.** The system of record is useless if only the admin sees it. EduManage surfaces contextually relevant insights to each stakeholder — parents see their child's week, teachers see their classroom, students see their schedule and progress, finance sees cash flow, school leadership sees the whole picture. Not a data dump. Each person gets what they need to know and what to do next. This is where reassurance lives — the parent doesn't call the school, the teacher doesn't repeat themselves, the student knows what's coming.
+**Layer 2 — Stakeholder Intelligence.** The system of record is useless if only school management sees it. EduManage surfaces contextually relevant insight to each stakeholder — school leaders see institutional performance, parents see their child's journey, teachers see their classroom effectiveness, students see their 360 profile. Not a data dump. Each person gets what they need to know and what to do next.
 
-**Layer 3 — Intelligence.** Over time, the system of record compounds into something more powerful than daily operations:
-- **Student profiles** — every academic result, attendance pattern, sports participation, behavioural record, and communication is woven into a comprehensive profile that surfaces the whole child. Academic performance, emotional intelligence, social engagement, behavioural patterns — not just grades. Teachers use it to give personalised attention. Parents see the full picture and can guide their child toward the strengths, interests, and career path where they are most likely to thrive.
-- **Teacher performance profiles** — syllabus coverage, student outcomes, attendance patterns, parent feedback. Performance reviews become evidence-based, not subjective. The goal is not surveillance but continuous improvement — helping teachers get better, which ultimately raises the quality of students the school produces.
-- **AI-assisted financial reconciliation** — fees come in via mobile money, bank transfers, and cash. Expenses go out to suppliers, staff, and service providers. AI automatically reconciles accounts payable and accounts receivable, matching payments to invoices, flagging discrepancies, and giving the finance office a clean, real-time picture of the school's financial health without manual spreadsheet work.
+**Layer 3 — Compounding Intelligence.** Over time, the data compounds:
+- **Lifelong student profiles** — academic, emotional, social, behavioural — the whole child, not just grades. The profile outlives the school: primary → secondary → university → employment. The child owns it.
+- **School Performance Intelligence** — cohort trajectories, teacher effectiveness tied to student outcomes, parent confidence scoring, institutional reputation metrics. Leaders see whether the school is winning or slowly losing ground.
+- **Classroom Professional Intelligence** — teachers get insight back from the data they put in. Which approaches are working? Which students are progressing? Evidence-based, not subjective.
+- **AI financial reconciliation** — mobile money, bank transfers, cash. AP/AR matching, discrepancy flagging, real-time cash flow visibility for planning.
+- **Parent Transparency Engine** — the return on every fee paid. Child's progress, activities, engagement, and growth visible without calling the school.
 
-**Layer 4 — Governance & Compliance.** Schools report to governing authorities — ministry of education, school boards, regulatory bodies. EduManage generates compliance and performance reports that can be submitted directly, pulling from the same system of record. No separate data collection exercise. The data is already there because Layers 1-3 captured it as part of daily operations.
+**Layer 4 — Governance & Compliance.** Ministry reports, board submissions, regulatory compliance — generated from the same system of record. No separate data collection. The data is already there.
+
+---
+
+### Competitive Positioning
+
+EduManage creates a new category. Existing players occupy three separate, disconnected markets:
+- **School ERPs** (PowerSchool, Classter, Fedena) — admin tools
+- **Student portfolio/LMS tools** (Seesaw, ClassDojo) — instructional tools
+- **Employment verification** (LinkedIn, credential platforms) — post-school
+
+Nobody connects them. The child's story resets to zero at every transition. EduManage sits at the only point where all the raw data exists and builds a continuous record across the full lifecycle.
+
+**Key Africa-specific competitors:** BlueBic (200+ African schools), Uzalynx (Kenya, M-Pesa integrated), MyEncore (cashless canteen, transport tracking). None emphasise compounding student profiles, school performance intelligence, or AI financial reconciliation.
+
+**EduManage's moat:** Longitudinal data that compounds with time. A platform tracking a child from age 6 to 18 has something no competitor can replicate quickly.
+
+**Four revenue streams:** Schools (operations), Parents (child profile/visibility), Universities (verified applicant records), Employers (background verification).
 
 ## Source Code
 - **Lovable project**: https://lovable.dev/projects/a29dc1f7-d3da-4c56-8202-18a4a90dabee
