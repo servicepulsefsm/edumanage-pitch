@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduManage — Competitive Intelligence & Strategy</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --bg:#07080d;
+  --bg2:#0e0f17;
+  --bg3:#141520;
+  --border:#1c1e2e;
+  --border2:#242638;
+  --text:#e8eaf2;
+  --muted:#5a5d7a;
+  --dim:#383b54;
+  --green:#00e5a0;
+  --blue:#4d9fff;
+  --purple:#a78bfa;
+  --amber:#fbbf24;
+  --red:#f87171;
+  --cyan:#22d3ee;
+  --pink:#f472b6;
+}
+
+html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow:hidden}
+
+/* ── SHELL ── */
+.shell{display:flex;height:100vh;width:100vw}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 0;overflow-y:auto}
+.logo{padding:0 20px 24px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.logo-mark{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-0.5px}
+.logo-mark span{color:var(--green)}
+.logo-sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+.nav-section{padding:0 12px;margin-bottom:8px}
+.nav-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:8px 8px 6px;font-weight:600}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .15s;margin-bottom:2px;border:1px solid transparent}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--bg3);color:var(--text);border-color:var(--border2)}
+.nav-item .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.nav-footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border)}
+.nav-footer p{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* ── MAIN ── */
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;gap:16px;flex-shrink:0;background:var(--bg2)}
+.topbar-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--muted)}
+.topbar-right{margin-left:auto;display:flex;gap:8px}
+.btn{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;border:1px solid var(--border2);background:var(--bg3);color:var(--muted)}
+.btn:hover{border-color:var(--dim);color:var(--text)}
+.btn-primary{background:var(--green);color:#000;border-color:var(--green)}
+.btn-primary:hover{opacity:.9}
+
+.content{flex:1;overflow-y:auto;padding:28px}
+
+/* ── PANELS ── */
+.panel{display:none}
+.panel.active{display:block}
+
+/* ── TYPOGRAPHY ── */
+.page-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.8px;margin-bottom:6px}
+.page-sub{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.5}
+
+/* ── STAT ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.stat-value{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-1px}
+.stat-label{font-size:12px;color:var(--muted);margin-top:4px}
+.stat-note{font-size:11px;margin-top:8px;padding:3px 8px;border-radius:4px;display:inline-block}
+
+/* ── GRID 2 ── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:20px}
+
+/* ── CARD ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:22px}
+.card-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:4px;letter-spacing:-.3px}
+.card-sub{font-size:12px;color:var(--muted);margin-bottom:18px}
+.chart-wrap{position:relative}
+
+/* ── FEATURE TABLE ── */
+.feat-table{width:100%;border-collapse:collapse;font-size:13px}
+.feat-table th{text-align:left;padding:10px 14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);font-weight:600}
+.feat-table td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+.feat-table tr:last-child td{border-bottom:none}
+.feat-table tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.5px}
+.b-red{background:rgba(248,113,113,.12);color:var(--red)}
+.b-amber{background:rgba(251,191,36,.12);color:var(--amber)}
+.b-green{background:rgba(0,229,160,.12);color:var(--green)}
+.b-blue{background:rgba(77,159,255,.12);color:var(--blue)}
+.b-purple{background:rgba(167,139,250,.12);color:var(--purple)}
+.b-muted{background:rgba(90,93,122,.12);color:var(--muted)}
+
+/* ── POSITIONING QUADRANT ── */
+.quadrant-wrap{position:relative;background:var(--bg3);border-radius:10px;overflow:hidden}
+.quad-label{position:absolute;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;opacity:.4}
+.quad-tl{top:12px;left:14px;color:var(--muted)}
+.quad-tr{top:12px;right:14px;color:var(--green);text-align:right}
+.quad-bl{bottom:12px;left:14px;color:var(--muted)}
+.quad-br{bottom:12px;right:14px;color:var(--muted);text-align:right}
+
+/* ── CANVAS LEGEND ── */
+.canvas-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.cl-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.cl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── ERRC GRID ── */
+.errc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.errc-card{border-radius:10px;padding:18px;border:1px solid}
+.errc-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:12px}
+.errc-items{display:flex;flex-direction:column;gap:6px}
+.errc-item{font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:8px;line-height:1.4}
+.errc-item::before{content:'\2192';flex-shrink:0;opacity:.4}
+
+/* ── GTOP TABLE ── */
+.gap-row{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}
+.gap-row:last-child{border-bottom:none}
+.gap-rank{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--dim);min-width:36px}
+.gap-content h4{font-size:13px;font-weight:600;margin-bottom:4px}
+.gap-content p{font-size:12px;color:var(--muted);line-height:1.5}
+.gap-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-left:8px}
+
+/* ── ROADMAP TIMELINE ── */
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--border)}
+.tl-item:last-child{border-bottom:none}
+.tl-left{min-width:80px;text-align:right}
+.tl-year{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+.tl-phase{font-size:10px;color:var(--muted);margin-top:2px}
+.tl-line{width:1px;background:var(--border);margin:0 4px;position:relative}
+.tl-dot{width:10px;height:10px;border-radius:50%;border:2px solid;position:absolute;left:-5px;top:4px;background:var(--bg)}
+.tl-body h4{font-size:13px;font-weight:600;margin-bottom:6px}
+.tl-body p{font-size:12px;color:var(--muted);line-height:1.5}
+.tl-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.tl-pill{font-size:10px;padding:2px 8px;border-radius:4px;background:var(--bg3);border:1px solid var(--border);color:var(--muted)}
+
+/* ── TOOLTIP ── */
+.tooltip-custom{background:var(--bg2) !important;border:1px solid var(--border2) !important;border-radius:8px !important;color:var(--text) !important;font-family:'DM Sans',sans-serif !important;font-size:12px !important}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* ── DIVIDER ── */
+.section-divider{height:1px;background:var(--border);margin:24px 0}
+
+/* ── INSIGHT BOX ── */
+.insight{background:var(--bg3);border-left:3px solid;border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:13px;line-height:1.6}
+.insight strong{display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;font-weight:700}
+
+/* ── MOBILE RESPONSIVE ── */
+@media(max-width:900px){
+  .sidebar{display:none}
+  .shell{flex-direction:column}
+  html,body{overflow:auto}
+  .main{overflow:auto}
+  .content{padding:16px}
+  .stat-row{grid-template-columns:1fr 1fr}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .errc-grid{grid-template-columns:1fr}
+  .feat-table{font-size:11px}
+  .feat-table th,.feat-table td{padding:8px 8px}
+  .page-title{font-size:20px}
+}
+@media(max-width:480px){
+  .stat-row{grid-template-columns:1fr}
+  .topbar{padding:0 12px}
+  .topbar-badge{display:none}
+  .content{padding:10px}
+}
+
+/* ── PRINT ── */
+@media print{
+  *{color:#111 !important;background:white !important;border-color:#ccc !important}
+  .sidebar,.topbar,.btn{display:none !important}
+  html,body,.main,.content{overflow:visible !important;height:auto !important;width:100% !important}
+  .shell{display:block}
+  .panel{display:block !important;page-break-after:always;margin-bottom:24px}
+  .card{border:1px solid #ccc;page-break-inside:avoid}
+  .stat{border:1px solid #ccc}
+  .badge{border:1px solid #999}
+  canvas{max-height:280px}
+  ::-webkit-scrollbar{display:none}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">Edu<span>Manage</span></div>
+    <div class="logo-sub">Strategy Intelligence</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Analysis</div>
+    <div class="nav-item active" role="button" tabindex="0" onclick="show('overview')" onkeydown="if(event.key==='Enter')show('overview')">
+      <div class="dot" style="background:var(--green)"></div>Market Overview
+    </div>
+    <div class="nav-item" role="button" tabindex="0" onclick="show('canvas')" onkeydown="if(event.key==='Enter')show('canvas')">
+      <div class="dot" style="background:var(--blue)"></div>Strategy Canvas
+    </div>
+    <div class="nav-item" role="button" tabindex="0" onclick="show('positioning')" onkeydown="if(event.key==='Enter')show('positioning')">
+      <div class="dot" style="background:var(--purple)"></div>Competitive Map
+    </div>
+    <div class="nav-item" role="button" tabindex="0" onclick="show('features')" onkeydown="if(event.key==='Enter')show('features')">
+      <div class="dot" style="background:var(--amber)"></div>Feature Saturation
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Strategy</div>
+    <div class="nav-item" role="button" tabindex="0" onclick="show('gaps')" onkeydown="if(event.key==='Enter')show('gaps')">
+      <div class="dot" style="background:var(--red)"></div>White Space
+    </div>
+    <div class="nav-item" role="button" tabindex="0" onclick="show('errc')" onkeydown="if(event.key==='Enter')show('errc')">
+      <div class="dot" style="background:var(--cyan)"></div>ERRC Framework
+    </div>
+    <div class="nav-item" role="button" tabindex="0" onclick="show('roadmap')" onkeydown="if(event.key==='Enter')show('roadmap')">
+      <div class="dot" style="background:var(--pink)"></div>Roadmap & GTM
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <p>49 competitors analysed across Southern Africa & SADC. April 2026.</p>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Market Overview</div>
+    <div class="topbar-badge" id="topbar-badge">49 vendors &middot; 7 countries</div>
+    <div class="topbar-right">
+      <button class="btn" onclick="window.print()">Export PDF</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- OVERVIEW -->
+    <div class="panel active" id="panel-overview">
+      <div class="page-title">Southern Africa SMS Market</div>
+      <div class="page-sub">Competitive landscape across South Africa, Zimbabwe, Botswana, Namibia, Zambia, Lesotho & Eswatini</div>
+
+      <div class="stat-row">
+        <div class="stat">
+          <div class="stat-value" style="color:var(--green)">49</div>
+          <div class="stat-label">Active Vendors Mapped</div>
+          <span class="stat-note" style="background:rgba(0,229,160,.1);color:var(--green)">SA &middot; ZW &middot; BW &middot; NA &middot; ZM &middot; LS &middot; SZ</span>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color:var(--amber)">14</div>
+          <div class="stat-label">Zimbabwe Competitors</div>
+          <span class="stat-note" style="background:rgba(251,191,36,.1);color:var(--amber)">Most fragmented market</span>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color:var(--blue)">0</div>
+          <div class="stat-label">Local Vendors in Botswana / Namibia</div>
+          <span class="stat-note" style="background:rgba(77,159,255,.1);color:var(--blue)">Wide open opportunity</span>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color:var(--red)">6.6</div>
+          <div class="stat-label">Blue Ocean Gap Score (out of 10)</div>
+          <span class="stat-note" style="background:rgba(248,113,113,.1);color:var(--red)">On intelligence factors</span>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title">Vendors by Country</div>
+          <div class="card-sub">Distribution of active school management systems</div>
+          <div class="chart-wrap" style="height:220px">
+            <canvas id="chartCountry" aria-label="Vendors by country doughnut chart"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Market Maturity by Segment</div>
+          <div class="card-sub">Feature depth vs local relevance per strategic group</div>
+          <div class="chart-wrap" style="height:220px">
+            <canvas id="chartMaturity" aria-label="Market maturity bar chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-title">Vendor Landscape &mdash; All 49 Competitors</div>
+        <div class="card-sub">Sorted by competitive threat score.</div>
+        <table class="feat-table">
+          <thead><tr>
+            <th>Vendor</th><th>Country</th><th>Pricing</th><th>Deployment</th><th>Target</th><th>Threat Level</th><th>Key Gap</th>
+          </tr></thead>
+          <tbody id="vendor-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="insight" style="border-color:var(--amber);color:var(--muted)">
+        <strong style="color:var(--amber)">Key Finding</strong>
+        ERP-style administration is saturated across all 49 competitors &mdash; learner records, fees, attendance, and reporting are table stakes. The white space is intelligence: no competitor provides cohort trajectories, parent confidence scoring, or teacher effectiveness attribution.
+      </div>
+    </div>
+
+    <!-- STRATEGY CANVAS -->
+    <div class="panel" id="panel-canvas">
+      <div class="page-title">Strategy Canvas</div>
+      <div class="page-sub">15 value factors across the industry &mdash; red ocean clustering vs EduManage's divergent curve</div>
+
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-title">Industry Value Curve vs EduManage</div>
+        <div class="card-sub">Factors 1&ndash;9: Red ocean (everyone invests here). Factors 10&ndash;15: Blue ocean (industry scores near zero).</div>
+        <div class="chart-wrap" style="height:340px">
+          <canvas id="chartCanvas" aria-label="Strategy canvas value curve chart"></canvas>
+        </div>
+        <div class="canvas-legend" id="canvas-legend"></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title">Red Ocean Factors</div>
+          <div class="card-sub">Where all 49 competitors cluster and fight</div>
+          <table class="feat-table">
+            <thead><tr><th>#</th><th>Factor</th><th>Industry Avg</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--dim)">1</td><td>Admin & Operations</td><td style="color:var(--amber)">7.5</td><td><span class="badge b-red">SATURATED</span></td></tr>
+              <tr><td style="color:var(--dim)">2</td><td>Academic Management</td><td style="color:var(--amber)">6.8</td><td><span class="badge b-red">SATURATED</span></td></tr>
+              <tr><td style="color:var(--dim)">3</td><td>Financial Management</td><td style="color:var(--amber)">6.4</td><td><span class="badge b-amber">COMPETITIVE</span></td></tr>
+              <tr><td style="color:var(--dim)">4</td><td>Parent Communication</td><td style="color:var(--amber)">6.1</td><td><span class="badge b-amber">COMPETITIVE</span></td></tr>
+              <tr><td style="color:var(--dim)">5</td><td>Teacher Tools</td><td style="color:var(--amber)">5.8</td><td><span class="badge b-amber">COMPETITIVE</span></td></tr>
+              <tr><td style="color:var(--dim)">6</td><td>Local Compliance</td><td style="color:var(--amber)">5.2</td><td><span class="badge b-blue">VARIABLE</span></td></tr>
+              <tr><td style="color:var(--dim)">7</td><td>Mobile-First Design</td><td style="color:var(--amber)">6.2</td><td><span class="badge b-amber">COMPETITIVE</span></td></tr>
+              <tr><td style="color:var(--dim)">8</td><td>Offline Capability</td><td style="color:var(--amber)">2.5</td><td><span class="badge b-green">OPPORTUNITY</span></td></tr>
+              <tr><td style="color:var(--dim)">9</td><td>Pricing Accessibility</td><td style="color:var(--amber)">6.0</td><td><span class="badge b-amber">COMPETITIVE</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">Blue Ocean Factors</div>
+          <div class="card-sub">Where the entire industry scores near zero</div>
+          <table class="feat-table">
+            <thead><tr><th>#</th><th>Factor</th><th>Industry Avg</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--dim)">10</td><td>Student Self-Service</td><td style="color:var(--green)">3.2</td><td><span class="badge b-green">WHITE SPACE</span></td></tr>
+              <tr><td style="color:var(--dim)">11</td><td>AI / Intelligence Layer</td><td style="color:var(--green)">2.5</td><td><span class="badge b-green">WHITE SPACE</span></td></tr>
+              <tr><td style="color:var(--dim)">12</td><td>Lifelong Learner Profile</td><td style="color:var(--green)">1.1</td><td><span class="badge b-purple">UNOCCUPIED</span></td></tr>
+              <tr><td style="color:var(--dim)">13</td><td>Multi-Stakeholder Design</td><td style="color:var(--green)">4.0</td><td><span class="badge b-green">WHITE SPACE</span></td></tr>
+              <tr><td style="color:var(--dim)">14</td><td>School Perf Intelligence</td><td style="color:var(--green)">2.2</td><td><span class="badge b-purple">UNOCCUPIED</span></td></tr>
+              <tr><td style="color:var(--dim)">15</td><td>Multi-Currency / Pay Rails</td><td style="color:var(--green)">3.8</td><td><span class="badge b-green">WHITE SPACE</span></td></tr>
+            </tbody>
+          </table>
+          <div class="insight" style="border-color:var(--purple);color:var(--muted);margin-top:14px">
+            <strong style="color:var(--purple)">The Gap Is 6.6 Points</strong>
+            Industry average on blue ocean factors: 3.1. EduManage target: 9.7. That gap IS the blue ocean.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSITIONING -->
+    <div class="panel" id="panel-positioning">
+      <div class="page-title">Competitive Positioning Map</div>
+      <div class="page-sub">Feature depth vs local market relevance &mdash; the two axes that determine strategic group membership</div>
+
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-title">Competitive Landscape Scatter</div>
+        <div class="card-sub">Bubble size = implementation effort. Hover for vendor details.</div>
+        <div class="chart-wrap" style="height:380px">
+          <canvas id="chartScatter" aria-label="Competitive positioning scatter chart"></canvas>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="card">
+          <div class="card-title" style="color:var(--red)">Group 1: Avoid / Integrate</div>
+          <div class="card-sub">Government mandated &mdash; can't displace</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.7">
+            <strong style="color:var(--text)">SA-SAMS</strong> &mdash; free, compliance-first, 85%+ SA market. Cannot be displaced. Must be integrated with. MyEncore already shows the playbook: build bidirectional sync and ride SA-SAMS's network.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:var(--amber)">Group 2: Direct Competition</div>
+          <div class="card-sub">Full-stack admin &mdash; match then surpass</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.7">
+            <strong style="color:var(--text)">d6, MyEncore, Njere, Ed-admin</strong> &mdash; comprehensive features, local relevance. Enter at feature parity ($2-3/student), then immediately redirect conversation to intelligence &mdash; a conversation none of them can have.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:var(--green)">Group 3: Subsume</div>
+          <div class="card-sub">Niche solutions &mdash; absorb their best features</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.7">
+            <strong style="color:var(--text)">Sekani, Frame, ESMESI, Simba</strong> &mdash; one thing done well. Too narrow to be a system of record. Absorb multi-currency (Sekani), social forum (Frame), QR reports (ESMESI) into one unified platform.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="panel" id="panel-features">
+      <div class="page-title">Feature Saturation Analysis</div>
+      <div class="page-sub">Kano Model applied: classifying every feature across 49 vendors as painkiller, vitamin, table stakes, or white space</div>
+
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-title">Feature Category Distribution</div>
+        <div class="card-sub">How saturated is each capability domain across the competitive set?</div>
+        <div class="chart-wrap" style="height:260px">
+          <canvas id="chartFeatures" aria-label="Feature saturation bar chart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Full Feature Saturation Table</div>
+        <div class="card-sub">Kano classification &middot; Vendor saturation &middot; Buyer pain level &middot; EduManage priority</div>
+        <table class="feat-table">
+          <thead><tr>
+            <th>Feature Domain</th><th>Kano Type</th><th>Saturation</th><th>Buyer Pain</th><th>EduManage Play</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><strong>Student records & enrolment</strong></td><td><span class="badge b-muted">TABLE STAKES</span></td><td>100%</td><td style="color:var(--amber)">High</td><td>Match &mdash; no differentiation</td></tr>
+            <tr><td><strong>Attendance tracking</strong></td><td><span class="badge b-muted">TABLE STAKES</span></td><td>100%</td><td style="color:var(--amber)">High</td><td>Match &mdash; make faster than paper</td></tr>
+            <tr><td><strong>Report card generation</strong></td><td><span class="badge b-muted">TABLE STAKES</span></td><td>96%</td><td style="color:var(--amber)">High</td><td>Match &mdash; auto-generate, parents get digital copy</td></tr>
+            <tr><td><strong>Fee invoicing & collection</strong></td><td><span class="badge b-red">PAINKILLER</span></td><td>89%</td><td style="color:var(--red)">Critical</td><td>Raise &mdash; AI reconciliation, predictive cash flow</td></tr>
+            <tr><td><strong>Parent communication portal</strong></td><td><span class="badge b-amber">VITAMIN</span></td><td>85%</td><td style="color:var(--muted)">Low</td><td>Eliminate portal &mdash; deliver via WhatsApp</td></tr>
+            <tr><td><strong>SMS / push notifications</strong></td><td><span class="badge b-muted">TABLE STAKES</span></td><td>80%</td><td style="color:var(--amber)">Medium</td><td>Match &mdash; contextual only, not broadcasts</td></tr>
+            <tr><td><strong>Timetable management</strong></td><td><span class="badge b-muted">TABLE STAKES</span></td><td>78%</td><td style="color:var(--amber)">Medium</td><td>Match</td></tr>
+            <tr><td><strong>Academic grading & exams</strong></td><td><span class="badge b-muted">TABLE STAKES</span></td><td>91%</td><td style="color:var(--amber)">High</td><td>Match + curriculum alignment (ZIMSEC/CAPS)</td></tr>
+            <tr><td><strong>WhatsApp integration</strong></td><td><span class="badge b-red">PAINKILLER</span></td><td>35%</td><td style="color:var(--red)">Critical</td><td>Make WhatsApp the primary parent interface</td></tr>
+            <tr><td><strong>Mobile-first / native app</strong></td><td><span class="badge b-red">PAINKILLER</span></td><td>65%</td><td style="color:var(--red)">Critical</td><td>Must-have &mdash; 90%+ of SA/ZW parents mobile-only</td></tr>
+            <tr><td><strong>Offline capability</strong></td><td><span class="badge b-red">PAINKILLER</span></td><td>18%</td><td style="color:var(--red)">Critical</td><td>Create &mdash; rural schools can't rely on internet</td></tr>
+            <tr><td><strong>Multi-currency payments</strong></td><td><span class="badge b-red">PAINKILLER</span></td><td>22%</td><td style="color:var(--red)">Critical (ZW)</td><td>USD/ZWL/ZAR + EcoCash/M-Pesa/bank</td></tr>
+            <tr><td><strong>Transport / bus tracking</strong></td><td><span class="badge b-amber">VITAMIN</span></td><td>28%</td><td style="color:var(--muted)">Medium</td><td>Include &mdash; daily touchpoint = daily app open</td></tr>
+            <tr><td><strong>Local compliance reporting</strong></td><td><span class="badge b-red">PAINKILLER</span></td><td>42%</td><td style="color:var(--red)">Critical</td><td>Auto-generate ZIMSEC/EMIS/SA-SAMS from data</td></tr>
+            <tr><td><strong>AI / predictive intelligence</strong></td><td><span class="badge b-green">WHITE SPACE</span></td><td>8%</td><td style="color:var(--muted)">Latent</td><td>Create &mdash; parent confidence score, at-risk students</td></tr>
+            <tr><td><strong>School performance dashboards</strong></td><td><span class="badge b-green">WHITE SPACE</span></td><td>12%</td><td style="color:var(--muted)">Latent</td><td>Create &mdash; cohort trajectories, rep score, teacher effectiveness</td></tr>
+            <tr><td><strong>Teacher effectiveness analytics</strong></td><td><span class="badge b-green">WHITE SPACE</span></td><td>4%</td><td style="color:var(--muted)">Latent</td><td>Create &mdash; evidence returned to teachers, not extracted</td></tr>
+            <tr><td><strong>Student 360 / self-service</strong></td><td><span class="badge b-green">WHITE SPACE</span></td><td>9%</td><td style="color:var(--muted)">Latent</td><td>Create &mdash; student owns their own profile</td></tr>
+            <tr><td><strong>Lifelong learner record</strong></td><td><span class="badge b-purple">UNOCCUPIED</span></td><td>0%</td><td style="color:var(--muted)">Unaware</td><td>Create &mdash; child-owned, survives graduation</td></tr>
+            <tr><td><strong>Financial cash flow forecasting</strong></td><td><span class="badge b-green">WHITE SPACE</span></td><td>5%</td><td style="color:var(--muted)">Latent</td><td>Create &mdash; AI reconciliation + cash flow intelligence</td></tr>
+            <tr><td><strong>Parent confidence / retention score</strong></td><td><span class="badge b-purple">UNOCCUPIED</span></td><td>0%</td><td style="color:var(--muted)">Unaware</td><td>Create &mdash; predict withdrawal 60-90 days in advance</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- WHITE SPACE -->
+    <div class="panel" id="panel-gaps">
+      <div class="page-title">White Space Opportunities</div>
+      <div class="page-sub">Pain points that exist in the market but no competitor is solving &mdash; ranked by buyer urgency and EduManage fit</div>
+
+      <div class="stat-row">
+        <div class="stat">
+          <div class="stat-value" style="color:var(--red)">7</div>
+          <div class="stat-label">Critical Painkillers Underserved</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color:var(--purple)">2</div>
+          <div class="stat-label">Completely Unoccupied Factors</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color:var(--green)">$1&ndash;3</div>
+          <div class="stat-label">per student/year price point proven</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color:var(--amber)">60&ndash;90</div>
+          <div class="stat-label">days advance warning possible on churn</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-title">White Space Radar</div>
+        <div class="card-sub">Opportunity score across 8 dimensions &mdash; higher = bigger unmet need</div>
+        <div class="chart-wrap" style="height:300px">
+          <canvas id="chartRadar" aria-label="White space radar chart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Top White Space Opportunities &mdash; Ranked</div>
+        <div class="card-sub">By combination of buyer pain intensity and competitive absence</div>
+        <div id="gaps-list"></div>
+      </div>
+    </div>
+
+    <!-- ERRC -->
+    <div class="panel" id="panel-errc">
+      <div class="page-title">ERRC Framework</div>
+      <div class="page-sub">Eliminate &middot; Reduce &middot; Raise &middot; Create &mdash; the four strategic moves that define EduManage's blue ocean</div>
+
+      <div class="errc-grid" style="margin-bottom:20px">
+        <div class="errc-card" style="background:rgba(248,113,113,.04);border-color:rgba(248,113,113,.2)">
+          <div class="errc-label" style="color:var(--red)">&#9679; Eliminate</div>
+          <div class="errc-items">
+            <div class="errc-item">Admin-first design philosophy &mdash; the admin is one stakeholder, not the only one</div>
+            <div class="errc-item">The parent portal nobody uses &mdash; &lt;5% engagement industry average</div>
+            <div class="errc-item">Report card as the final output &mdash; replace with continuous visibility</div>
+            <div class="errc-item">School-owned student data &mdash; the child should own their record</div>
+            <div class="errc-item">Desktop-first architecture &mdash; Zimbabwe & SA are mobile-first markets</div>
+            <div class="errc-item">Multi-week implementation projects &mdash; schools live in a day</div>
+            <div class="errc-item">Information monopoly &mdash; the school should not gatekeep child data</div>
+          </div>
+        </div>
+        <div class="errc-card" style="background:rgba(251,191,36,.04);border-color:rgba(251,191,36,.2)">
+          <div class="errc-label" style="color:var(--amber)">&#9660; Reduce</div>
+          <div class="errc-items">
+            <div class="errc-item">Module count &mdash; from 50+ (Skolaro/OpenEduCat) to 12 focused modules</div>
+            <div class="errc-item">Teacher data entry &mdash; from 30 min/day to 5 min max</div>
+            <div class="errc-item">Feature bloat in settings &mdash; opinionated defaults, configure by exception</div>
+            <div class="errc-item">Communication noise &mdash; contextual per child, not school-wide broadcasts</div>
+            <div class="errc-item">Compliance reporting burden &mdash; auto-generate from existing data</div>
+            <div class="errc-item">Pricing opacity &mdash; transparent, published, no hidden setup fees</div>
+          </div>
+        </div>
+        <div class="errc-card" style="background:rgba(0,229,160,.04);border-color:rgba(0,229,160,.2)">
+          <div class="errc-label" style="color:var(--green)">&#9650; Raise</div>
+          <div class="errc-items">
+            <div class="errc-item">Parent visibility &mdash; from term report card to real-time child transparency</div>
+            <div class="errc-item">Teacher professional dignity &mdash; from data clerk to informed professional</div>
+            <div class="errc-item">Financial intelligence &mdash; from fee ledger to AI cash flow forecasting</div>
+            <div class="errc-item">Student self-awareness &mdash; from no access to 360-degree profile</div>
+            <div class="errc-item">School leader decision support &mdash; from ops dashboard to institutional intelligence</div>
+            <div class="errc-item">Pricing transparency &mdash; published, simple, no surprises</div>
+            <div class="errc-item">Offline capability &mdash; from internet-dependent to offline-first with sync</div>
+          </div>
+        </div>
+        <div class="errc-card" style="background:rgba(167,139,250,.04);border-color:rgba(167,139,250,.2)">
+          <div class="errc-label" style="color:var(--purple)">&#9733; Create</div>
+          <div class="errc-items">
+            <div class="errc-item">School Performance Intelligence &mdash; cohort trajectories, rep score, teacher attribution</div>
+            <div class="errc-item">Parent Transparency Engine &mdash; WhatsApp-native, not portal-dependent</div>
+            <div class="errc-item">Classroom Professional Intelligence &mdash; insights returned to teachers</div>
+            <div class="errc-item">Lifelong Learner Record &mdash; child-owned, survives graduation, verified credential</div>
+            <div class="errc-item">AI Financial Reconciliation &mdash; auto-match EcoCash/M-Pesa/bank to students</div>
+            <div class="errc-item">Parent Confidence Score &mdash; predict withdrawal 60-90 days in advance</div>
+            <div class="errc-item">Institutional Reputation Score &mdash; single board metric, tracked quarterly</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Pain vs Vitamin Matrix</div>
+        <div class="card-sub">Every EduManage feature classified by buyer urgency and competitive differentiation</div>
+        <div class="chart-wrap" style="height:300px">
+          <canvas id="chartPainVitamin" aria-label="Pain vs vitamin bubble chart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROADMAP -->
+    <div class="panel" id="panel-roadmap">
+      <div class="page-title">Roadmap & Go-To-Market</div>
+      <div class="page-sub">Four-year sequenced strategy &mdash; enter as a painkiller, build a moat through intelligence</div>
+
+      <div class="grid2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-title">RICE Priority &mdash; Top Features</div>
+          <div class="card-sub">Sorted by (Reach &times; Impact &times; Confidence) &divide; Effort</div>
+          <div class="chart-wrap" style="height:280px">
+            <canvas id="chartRice" aria-label="RICE priority score chart"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Revenue Stream Forecast</div>
+          <div class="card-sub">Projected revenue by stream across 4 years (illustrative)</div>
+          <div class="chart-wrap" style="height:280px">
+            <canvas id="chartRevenue" aria-label="Revenue forecast stacked bar chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">4-Year Go-To-Market Timeline</div>
+        <div class="card-sub">The trojan horse sequence: enter on operations, win on intelligence</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-left"><div class="tl-year" style="color:var(--green)">Year 1</div><div class="tl-phase">Foundation</div></div>
+            <div class="tl-line"><div class="tl-dot" style="border-color:var(--green)"></div></div>
+            <div class="tl-body">
+              <h4>Trojan Horse &mdash; Win on Operations & Price</h4>
+              <p>Enter as a school management system. $2-3/student transparent pricing. Live in a day &mdash; no implementation project. WhatsApp-native parent updates. Offline-first. Multi-currency (USD/ZWL). ZIMSEC + SA-SAMS compliance. Target: 50 schools in Zimbabwe.</p>
+              <div class="tl-pills">
+                <span class="tl-pill">Student Records</span><span class="tl-pill">Attendance</span><span class="tl-pill">Fee Management</span><span class="tl-pill">Report Cards</span><span class="tl-pill">WhatsApp Comms</span><span class="tl-pill">ZIMSEC Compliance</span>
+              </div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left"><div class="tl-year" style="color:var(--blue)">Year 2</div><div class="tl-phase">Intelligence</div></div>
+            <div class="tl-line"><div class="tl-dot" style="border-color:var(--blue)"></div></div>
+            <div class="tl-body">
+              <h4>The Pivot &mdash; Win on Intelligence</h4>
+              <p>Turn 6 months of operational data into intelligence. Teachers receive classroom insights. Parents see child trajectory on WhatsApp weekly. School leaders get financial AI reconciliation. Parent Confidence Score beta. Target: 200 schools. Parent engagement &gt;40% weekly active.</p>
+              <div class="tl-pills">
+                <span class="tl-pill">Parent Transparency Engine</span><span class="tl-pill">Teacher Intelligence</span><span class="tl-pill">AI Fee Reconciliation</span><span class="tl-pill">At-Risk Students</span><span class="tl-pill">Cash Flow Forecast</span>
+              </div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left"><div class="tl-year" style="color:var(--purple)">Year 3</div><div class="tl-phase">Moat</div></div>
+            <div class="tl-line"><div class="tl-dot" style="border-color:var(--purple)"></div></div>
+            <div class="tl-body">
+              <h4>Compounding Data &mdash; Build the Moat</h4>
+              <p>2 years of longitudinal data creates cohort trajectories no competitor can replicate. Lifelong Learner Record beta. Parent Confidence Score live. Institutional Reputation Score quarterly metric. First university verification partnership. Target: 500 schools.</p>
+              <div class="tl-pills">
+                <span class="tl-pill">Cohort Trajectories</span><span class="tl-pill">Parent Confidence Score</span><span class="tl-pill">Rep Score</span><span class="tl-pill">Lifelong Record Beta</span><span class="tl-pill">University Pilot</span>
+              </div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left"><div class="tl-year" style="color:var(--amber)">Year 4+</div><div class="tl-phase">Network</div></div>
+            <div class="tl-line"><div class="tl-dot" style="border-color:var(--amber)"></div></div>
+            <div class="tl-body">
+              <h4>Network Effects &mdash; Category Ownership</h4>
+              <p>Child-owned portable records. University verification revenue. Employer background checks revenue. Government/donor outcome data. Cross-country expansion to Kenya, Botswana, Zambia. EduManage becomes the infrastructure &mdash; not a school tool, but the child's verified record platform.</p>
+              <div class="tl-pills">
+                <span class="tl-pill">Portable Records</span><span class="tl-pill">University Revenue</span><span class="tl-pill">Employer Revenue</span><span class="tl-pill">Donor Data</span><span class="tl-pill">Kenya Expansion</span><span class="tl-pill">Category Ownership</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+// Navigation
+const panels={overview:'Market Overview',canvas:'Strategy Canvas',positioning:'Competitive Map',features:'Feature Saturation',gaps:'White Space',errc:'ERRC Framework',roadmap:'Roadmap & GTM'};
+const badges={overview:'49 vendors \u00b7 7 countries',canvas:'15 value factors',positioning:'3 strategic groups',features:'Kano Model applied',gaps:'7 critical white spaces',errc:'4 strategic moves',roadmap:'4-year sequence'};
+
+function show(id){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active')});
+  document.getElementById('panel-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(n){if(n.getAttribute('onclick')==="show('"+id+"')"){n.classList.add('active')}});
+  document.getElementById('topbar-title').textContent=panels[id];
+  document.getElementById('topbar-badge').textContent=badges[id];
+}
+
+// Chart defaults
+Chart.defaults.color='#5a5d7a';
+Chart.defaults.borderColor='#1c1e2e';
+Chart.defaults.font.family='DM Sans';
+
+var G='#00e5a0',B='#4d9fff',P='#a78bfa',AM='#fbbf24',R='#f87171',C='#22d3ee',PK='#f472b6';
+
+// Vendor data — all 49
+var vendors=[
+  {name:'SA-SAMS',country:'South Africa',pricing:'Government funded',deploy:'Cloud',target:'Public schools (85%+)',threat:'Critical',gap:'Must integrate with; cannot displace'},
+  {name:'d6',country:'South Africa',pricing:'Subscription',deploy:'Cloud SaaS + Mobile',target:'Private; 2,500+ schools',threat:'High',gap:'No school performance intel'},
+  {name:'MyEncore',country:'South Africa',pricing:'R50/learner/yr',deploy:'Cloud + Mobile',target:'Private; all 9 provinces',threat:'High',gap:'No AI, no lifelong record'},
+  {name:'Frame (Pindah)',country:'Zimbabwe',pricing:'$1/student',deploy:'Cloud',target:'ZW private schools',threat:'High',gap:'Thin feature set, social only'},
+  {name:'Njere (Smatech)',country:'Zimbabwe',pricing:'Subscription',deploy:'Cloud + Apps',target:'AI + ERP schools',threat:'High',gap:'AI assistant not intelligence'},
+  {name:'Ed-admin Africa',country:'Pan-African',pricing:'Not published',deploy:'Cloud',target:'Multi-country private',threat:'Medium-High',gap:'No intelligence layer'},
+  {name:'Engage SMIS',country:'Pan-African',pricing:'Not published',deploy:'Cloud',target:'SA + ZW schools',threat:'Medium-High',gap:'Legacy credibility, no innovation'},
+  {name:'SchoolBase',country:'South Africa',pricing:'R18/student/mo',deploy:'Cloud SaaS',target:'Multi-school groups; 4 SADC countries',threat:'Medium',gap:'No local SADC compliance'},
+  {name:'Edupac',country:'South Africa',pricing:'Subscription',deploy:'Cloud',target:'Established SA private',threat:'Medium',gap:'Limited innovation visible'},
+  {name:'Sekani',country:'Zimbabwe',pricing:'Subscription',deploy:'Cloud',target:'ZW private schools',threat:'Medium',gap:'No intelligence, limited features'},
+  {name:'Fundah',country:'Zimbabwe',pricing:'Subscription; modular',deploy:'Cloud SaaS',target:'Private colleges; 20+ schools',threat:'Medium',gap:'No ZIMSEC integration; limited to private colleges'},
+  {name:'Open Class',country:'Zimbabwe',pricing:'Free / community',deploy:'Web platform',target:'Parents; 90K+ visitors',threat:'Medium',gap:'SMS product still in development'},
+  {name:'Havano ERP',country:'Zimbabwe',pricing:'Not published',deploy:'ERP-style',target:'ZW schools',threat:'Medium',gap:'ERP friction, no parent engagement'},
+  {name:'Classter',country:'Global',pricing:'Subscription; tiered',deploy:'Cloud SaaS',target:'Worldwide (SIS+LMS+CRM)',threat:'Medium',gap:'No SADC compliance, enterprise-only'},
+  {name:'SchoolMe',country:'Pan-African',pricing:'Not published',deploy:'Cloud',target:'Africa; multi-school',threat:'Medium',gap:'Cradle-to-workplace vision but no traction'},
+  {name:'Galactis.Education',country:'South Africa',pricing:'Not published',deploy:'Cloud',target:'Multi-school groups',threat:'Medium',gap:'Francophone focus'},
+  {name:'BlueBic',country:'Pan-African',pricing:'Not published',deploy:'Cloud SaaS',target:'Africa; 200+ schools',threat:'Medium',gap:'Nigeria-focused, no SA/ZW compliance'},
+  {name:'iSAMS',country:'South Africa',pricing:'Subscription',deploy:'Cloud SaaS',target:'International schools',threat:'Low-Medium',gap:'Too premium for SADC market'},
+  {name:'Simba Results',country:'Zimbabwe',pricing:'Not published',deploy:'Cloud',target:'Results management (ECD-F6)',threat:'Low-Medium',gap:'Results-only niche'},
+  {name:'KlearSkool',country:'Zambia',pricing:'Flexible; free trial',deploy:'Cloud + hybrid',target:'Zambia private; 12+ schools',threat:'Low-Medium',gap:'Zambia-only, ~12 staff'},
+  {name:'EllzTech',country:'Zimbabwe',pricing:'Not published',deploy:'Cloud',target:'ZW schools',threat:'Low',gap:'Niche, early stage'},
+  {name:'EDUPlus',country:'Zimbabwe',pricing:'Not published',deploy:'Cloud',target:'ZW schools',threat:'Low',gap:'Limited differentiation'},
+  {name:'ESMESI',country:'Zimbabwe',pricing:'Affordable',deploy:'Desktop + web',target:'ZW schools',threat:'Low',gap:'Small presence, limited depth'},
+  {name:'Sarutech',country:'Zimbabwe',pricing:'Not published',deploy:'Cloud + offline',target:'ZW schools (India-origin)',threat:'Low',gap:'Generic global product, PayPal only'},
+  {name:'Extramarks SA',country:'South Africa',pricing:'Not published',deploy:'Cloud SaaS',target:'e-learning + admin',threat:'Low',gap:'India-origin, ERP secondary'},
+  {name:'Scadsys / ScadCo',country:'South Africa',pricing:'Not published',deploy:'Desktop + web',target:'SA schools',threat:'Low',gap:'Desktop-heavy, no mobile'},
+  {name:'Mezzanineware',country:'South Africa',pricing:'Gov-funded',deploy:'Cloud',target:'Public (7K schools)',threat:'Low',gap:'Not commercial'},
+  {name:'Rise',country:'South Africa',pricing:'Subscription implied',deploy:'Cloud',target:'SA private schools',threat:'Low',gap:'Limited public info'},
+  {name:'SIMS School Admin',country:'South Africa',pricing:'Not published',deploy:'Cloud',target:'SA schools',threat:'Low',gap:'Limited visibility'},
+  {name:'GeniusEdu',country:'India (SADC pages)',pricing:'India pricing visible',deploy:'Cloud AWS',target:'Private school groups',threat:'Low',gap:'No verified SADC clients'},
+  {name:'Vidyalaya',country:'India (SADC pages)',pricing:'Quote-based',deploy:'ERP cloud',target:'ERP-oriented schools',threat:'Low',gap:'Unverified SADC presence'},
+  {name:'Gradelink',country:'Global',pricing:'Subscription visible',deploy:'Cloud SaaS',target:'K-12; 2,000+ worldwide',threat:'Low',gap:'No SA-SAMS or CAPS'},
+  {name:'Fedena',country:'Global',pricing:'Open source + Pro',deploy:'Self-hosted / cloud',target:'40K schools globally',threat:'Low',gap:'Not localised for SA/ZW'},
+  {name:'OpenEduCat',country:'Global',pricing:'Open source + Enterprise',deploy:'Self-hosted / cloud',target:'3M+ users; 90+ countries',threat:'Low',gap:'Generic, needs customisation'},
+  {name:'feKara',country:'Global',pricing:'Not published',deploy:'Cloud SaaS',target:'Small-medium; 40+ countries',threat:'Low',gap:'No African localisation'},
+  {name:'Skolaro',country:'Global',pricing:'Not published',deploy:'Cloud',target:'K-12; 20K worldwide',threat:'Low',gap:'India-focused'},
+  {name:'SchoolPad',country:'Global',pricing:'Not published',deploy:'Cloud',target:'K-12; Capterra SA',threat:'Low',gap:'Unclear SA adoption'},
+  {name:'SchoolSoft',country:'Global',pricing:'Not published',deploy:'Cloud',target:'SA; Capterra SA',threat:'Low',gap:'Very limited info'},
+  {name:'AI EDU ERP',country:'Global',pricing:'Free',deploy:'Cloud + mobile',target:'50-50K students',threat:'Low',gap:'No verified deployments'},
+  {name:'Smart School Manager',country:'Global',pricing:'Lifetime license',deploy:'Web (self-hosted)',target:'Claims 150+ countries',threat:'Low',gap:'Template pages, no verified SA/ZW'},
+  {name:'Brainstake / eSchools',country:'Pan-African',pricing:'Not published',deploy:'Mobile-first cloud',target:'Africa-wide',threat:'Low',gap:'Generic mobile-first'},
+  {name:'ProsoftAfrica',country:'Pan-African',pricing:'Not published',deploy:'Cloud + offline',target:'Cameroon / Francophone',threat:'Low',gap:'Cameroon focus only'},
+  {name:'Nersapp',country:'Pan-African',pricing:'Free core',deploy:'Cloud + mobile',target:'Nigeria / Africa',threat:'Low',gap:'Nigeria-focused'},
+  {name:'Kinderpedia',country:'Global',pricing:'Subscription',deploy:'Cloud SaaS',target:'35+ countries',threat:'Low',gap:'No SADC localisation'},
+  {name:'Edupro SMS',country:'SADC',pricing:'Open source',deploy:'Self-hosted (Moodle+Gibbon)',target:'Southern Africa',threat:'Low',gap:'SourceForge project, not polished'},
+  {name:'Smart School Software',country:'Zambia',pricing:'Not published',deploy:'All-in-one',target:'Broad operators',threat:'Low',gap:'Unverified product identity'},
+  {name:'AI EDU ERP (Namibia)',country:'Namibia',pricing:'Free; sustainability unclear',deploy:'ERP + mobile',target:'Schools needing ERP',threat:'Low',gap:'No Namibia deployments; high implementation burden'},
+  {name:'Vidyalaya (Botswana)',country:'Botswana',pricing:'Quote-based',deploy:'ERP cloud',target:'Schools needing admin',threat:'Low',gap:'UNVERIFIED; SEO landing page with Indian testimonials'},
+  {name:'SchoolBase (Lesotho/Eswatini)',country:'Lesotho / Eswatini',pricing:'R18/student/mo',deploy:'Cloud SaaS',target:'Private schools',threat:'Medium',gap:'No country-specific localisation'},
+];
+
+// Populate vendor table
+var tbody=document.getElementById('vendor-tbody');
+vendors.forEach(function(v){
+  var threatClass={'Critical':'b-purple','High':'b-red','Medium-High':'b-red','Medium':'b-amber','Low-Medium':'b-amber','Low':'b-muted'}[v.threat]||'b-muted';
+  tbody.innerHTML+='<tr>'+
+    '<td><strong>'+v.name+'</strong></td>'+
+    '<td style="color:var(--muted)">'+v.country+'</td>'+
+    '<td style="color:var(--muted);font-size:12px">'+v.pricing+'</td>'+
+    '<td style="color:var(--muted);font-size:12px">'+v.deploy+'</td>'+
+    '<td style="color:var(--muted);font-size:12px">'+v.target+'</td>'+
+    '<td><span class="badge '+threatClass+'">'+v.threat.toUpperCase()+'</span></td>'+
+    '<td style="color:var(--muted);font-size:12px">'+v.gap+'</td>'+
+  '</tr>';
+});
+
+// Chart: Country Distribution
+new Chart(document.getElementById('chartCountry'),{
+  type:'doughnut',
+  data:{
+    labels:['South Africa (17)','Zimbabwe (11)','Both SA+ZW (5)','SADC-only (5)','Pan-African (5)','Global (6)'],
+    datasets:[{
+      data:[17,11,5,5,5,6],
+      backgroundColor:[G,B,P,AM,C,PK,R],
+      borderWidth:0,hoverOffset:6
+    }]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{padding:12,font:{size:10}}}}}
+});
+
+// Chart: Market Maturity
+new Chart(document.getElementById('chartMaturity'),{
+  type:'bar',
+  data:{
+    labels:['Gov Mandated','Full-Stack Admin','Niche / Point','Pan-African','Global Generic'],
+    datasets:[
+      {label:'Feature Depth',data:[6,8,4,6,8],backgroundColor:G+'33',borderColor:G,borderWidth:1.5,borderRadius:4},
+      {label:'Local Relevance',data:[10,7,8,4,2],backgroundColor:B+'33',borderColor:B,borderWidth:1.5,borderRadius:4}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:11}}}},scales:{y:{max:10,grid:{color:'#1c1e2e'},ticks:{font:{size:10}}},x:{grid:{display:false},ticks:{font:{size:10}}}}}
+});
+
+// Chart: Strategy Canvas
+var canvasLabels=['Admin','Academic','Finance','Parent Comms','Teacher Tools','Compliance','Mobile','Offline','Pricing','Student Self','AI/Intel','Lifelong','Multi-Stkh','Sch Perf','Multi-Curr'];
+var competitors=[
+  {name:'SA-SAMS',color:'#ef4444',data:[8,7,3,2,5,10,3,4,10,1,1,1,2,2,1]},
+  {name:'d6',color:'#f97316',data:[9,8,9,9,7,9,8,2,5,4,5,1,6,3,2]},
+  {name:'MyEncore',color:'#eab308',data:[7,7,8,9,6,9,9,2,9,3,2,1,5,2,2]},
+  {name:'Frame',color:'#84cc16',data:[5,5,5,7,4,4,8,2,10,7,1,1,6,1,7]},
+  {name:'Njere',color:'#06b6d4',data:[7,7,6,7,7,4,8,2,6,4,6,1,5,2,4]},
+  {name:'Classter',color:'#8b5cf6',data:[8,7,7,6,6,2,6,2,4,4,3,1,5,3,4]},
+];
+var edumanage={name:'EduManage',color:'#00e5a0',data:[8,8,9,9,8,7,9,7,8,9,10,10,10,10,9]};
+
+var canvasDatasets=competitors.map(function(c){return{
+  label:c.name,data:c.data,borderColor:c.color,backgroundColor:'transparent',
+  borderWidth:1.5,pointRadius:3,tension:.3,borderDash:[3,3]
+}});
+canvasDatasets.push({
+  label:'EduManage',data:edumanage.data,borderColor:G,backgroundColor:G+'15',
+  borderWidth:3,pointRadius:5,tension:.3,fill:true
+});
+
+new Chart(document.getElementById('chartCanvas'),{
+  type:'line',
+  data:{labels:canvasLabels,datasets:canvasDatasets},
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{title:function(i){return 'Factor: '+canvasLabels[i[0].dataIndex]}}}},
+    scales:{
+      y:{min:0,max:10,grid:{color:'#1c1e2e'},ticks:{font:{size:10}}},
+      x:{grid:{color:'#1c1e2e'},ticks:{font:{size:9},maxRotation:45}}
+    }
+  }
+});
+
+// Build legend
+var leg=document.getElementById('canvas-legend');
+[].concat(competitors,[edumanage]).forEach(function(c){
+  leg.innerHTML+='<div class="cl-item"><div class="cl-dot" style="background:'+c.color+'"></div>'+c.name+'</div>';
+});
+
+// Chart: Scatter / Positioning
+var scatterData=[
+  {x:8,y:10,r:6,label:'SA-SAMS',color:R},
+  {x:9,y:8,r:5,label:'d6',color:AM},
+  {x:8,y:7,r:5,label:'MyEncore',color:AM},
+  {x:7,y:6,r:4,label:'SchoolBase',color:AM},
+  {x:7,y:5,r:4,label:'Edupac',color:B},
+  {x:9,y:3,r:4,label:'iSAMS',color:B},
+  {x:6,y:8,r:4,label:'Njere',color:AM},
+  {x:5,y:7,r:3,label:'Sekani',color:G},
+  {x:5,y:8,r:3,label:'Frame',color:G},
+  {x:6,y:6,r:4,label:'Ed-admin',color:B},
+  {x:8,y:4,r:5,label:'Classter',color:P},
+  {x:4,y:3,r:3,label:'GeniusEdu',color:P},
+  {x:5,y:5,r:3,label:'KlearSkool',color:C},
+  {x:4,y:7,r:3,label:'Fundah',color:G},
+  {x:10,y:10,r:7,label:'EduManage \u2605',color:G},
+];
+
+new Chart(document.getElementById('chartScatter'),{
+  type:'bubble',
+  data:{
+    datasets:scatterData.map(function(d){return{
+      label:d.label,
+      data:[{x:d.x,y:d.y,r:d.r}],
+      backgroundColor:d.color+'44',
+      borderColor:d.color,
+      borderWidth:d.label.indexOf('\u2605')>=0?3:1.5
+    }})
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:function(i){return i.dataset.label+': Feature Depth '+i.parsed.x+'/10, Local Relevance '+i.parsed.y+'/10'}}}},
+    scales:{
+      x:{min:2,max:11,title:{display:true,text:'Feature Depth \u2192',font:{size:11}},grid:{color:'#1c1e2e'},ticks:{font:{size:10}}},
+      y:{min:1,max:11,title:{display:true,text:'Local Market Relevance \u2192',font:{size:11}},grid:{color:'#1c1e2e'},ticks:{font:{size:10}}}
+    }
+  }
+});
+
+// Chart: Feature saturation horizontal bar
+new Chart(document.getElementById('chartFeatures'),{
+  type:'bar',
+  data:{
+    labels:['Table Stakes','Painkiller (underserved)','Vitamin','White Space','Unoccupied'],
+    datasets:[{
+      label:'Features in category',
+      data:[6,6,3,4,2],
+      backgroundColor:[R+'33',AM+'33',B+'33',G+'33',P+'33'],
+      borderColor:[R,AM,B,G,P],
+      borderWidth:1.5,borderRadius:6
+    }]
+  },
+  options:{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:'#1c1e2e'},ticks:{font:{size:11}}},y:{grid:{display:false},ticks:{font:{size:12}}}}
+  }
+});
+
+// Chart: White Space Radar
+new Chart(document.getElementById('chartRadar'),{
+  type:'radar',
+  data:{
+    labels:['AI Intelligence','School Perf Intel','Lifelong Record','Offline Capability','Multi-Currency','Parent Retention','Teacher Insights','Student Agency'],
+    datasets:[
+      {label:'Industry (avg)',data:[2.5,2.2,1.1,2.5,3.8,1.5,2.0,3.2],borderColor:R,backgroundColor:R+'18',borderWidth:1.5,pointRadius:3},
+      {label:'EduManage (target)',data:[10,10,10,7,9,10,9,9],borderColor:G,backgroundColor:G+'18',borderWidth:2.5,pointRadius:4}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    scales:{r:{min:0,max:10,grid:{color:'#1c1e2e'},pointLabels:{font:{size:10}},ticks:{display:false}}},
+    plugins:{legend:{labels:{font:{size:11}}}}
+  }
+});
+
+// Gap list
+var gaps=[
+  {rank:1,title:'AI Financial Reconciliation',desc:'EcoCash/M-Pesa/bank \u2192 auto-match to student accounts. Schools manually reconcile payments today. Multi-currency (USD/ZWL) adds complexity nobody is solving.',tag:'CRITICAL PAINKILLER',tagClass:'b-red'},
+  {rank:2,title:'Offline-First Architecture',desc:'18% of competitors offer offline. Rural Zimbabwe/SA schools have unreliable internet. Attendance, fees, grades \u2014 all captured offline, synced when connected.',tag:'CRITICAL PAINKILLER',tagClass:'b-red'},
+  {rank:3,title:'Parent Confidence Score',desc:'0% of competitors predict parent withdrawal. Fee delay + declining engagement + less comms = churn signal. 60-90 days advance warning is worth 6-12 months of fees per student retained.',tag:'UNOCCUPIED',tagClass:'b-purple'},
+  {rank:4,title:'School Performance Intelligence',desc:'Cohort trajectories, teacher effectiveness attribution, institutional reputation score. School leaders make decisions on gut instinct. No competitor provides institutional intelligence.',tag:'UNOCCUPIED',tagClass:'b-purple'},
+  {rank:5,title:'WhatsApp-Native Parent Transparency',desc:'65% of schools use WhatsApp groups for parent comms. Signal is drowned in noise. EduManage feeds structured, child-specific intelligence INTO WhatsApp \u2014 not a portal they need to log into.',tag:'WHITE SPACE',tagClass:'b-green'},
+  {rank:6,title:'Lifelong Learner Record',desc:'Every competitor\'s data dies in the school. Child\'s story resets to zero at each transition. A child-owned, portable, verified record from age 6 to employment is completely unoccupied.',tag:'UNOCCUPIED',tagClass:'b-purple'},
+  {rank:7,title:'Teacher Professional Intelligence',desc:'Teachers are data entry terminals in every competitor. Zero competitors return insight to teachers. "Your student cohort improved 12% in reading \u2014 your Thursday approach outperforms Monday by 18%."',tag:'WHITE SPACE',tagClass:'b-green'},
+  {rank:8,title:'Pricing Transparency',desc:'85% of competitors don\'t publish pricing. Frame ($1/student) and MyEncore (R50/learner) prove transparent aggressive pricing wins trust. Refusing-noncustomers cite price opacity as #1 barrier.',tag:'MARKET SIGNAL',tagClass:'b-amber'},
+];
+
+var gapList=document.getElementById('gaps-list');
+gaps.forEach(function(g){
+  gapList.innerHTML+='<div class="gap-row">'+
+    '<div class="gap-rank">'+String(g.rank).padStart(2,'0')+'</div>'+
+    '<div class="gap-content">'+
+      '<h4>'+g.title+' <span class="gap-tag badge '+g.tagClass+'">'+g.tag+'</span></h4>'+
+      '<p>'+g.desc+'</p>'+
+    '</div>'+
+  '</div>';
+});
+
+// Chart: Pain vs Vitamin (bubble)
+var pvData=[
+  {x:9,y:9,r:8,label:'AI Fee Reconciliation',color:G},
+  {x:9,y:1,r:7,label:'School Perf Intel',color:P},
+  {x:8,y:2,r:6,label:'Lifelong Record',color:P},
+  {x:8,y:9,r:7,label:'Offline Capability',color:G},
+  {x:9,y:7,r:6,label:'WhatsApp Native',color:G},
+  {x:7,y:1,r:5,label:'Parent Confidence Score',color:P},
+  {x:7,y:3,r:5,label:'Teacher Intel',color:B},
+  {x:5,y:8,r:5,label:'Attendance',color:R},
+  {x:4,y:9,r:5,label:'Report Cards',color:R},
+  {x:6,y:9,r:6,label:'Fee Invoicing',color:AM},
+  {x:3,y:9,r:4,label:'Parent Portal',color:R},
+  {x:6,y:7,r:5,label:'Multi-Currency',color:G},
+];
+
+new Chart(document.getElementById('chartPainVitamin'),{
+  type:'bubble',
+  data:{datasets:pvData.map(function(d){return{
+    label:d.label,data:[{x:d.x,y:d.y,r:d.r}],
+    backgroundColor:d.color+'44',borderColor:d.color,borderWidth:1.5
+  }})},
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:function(i){return i.dataset.label}}}},
+    scales:{
+      x:{min:0,max:10,title:{display:true,text:'Competitive Absence (10 = nobody does it) \u2192',font:{size:10}},grid:{color:'#1c1e2e'},ticks:{font:{size:9}}},
+      y:{min:0,max:10,title:{display:true,text:'Buyer Pain Intensity (10 = critical) \u2192',font:{size:10}},grid:{color:'#1c1e2e'},ticks:{font:{size:9}}}
+    }
+  }
+});
+
+// Chart: RICE scores
+var riceFeatures=['Grading Config','Daily Attendance','Announcements','Report Cards','Fee Templates','Payment Recording','Fee Balance Dashboard','Student Performance Trends','Promotion Workflow','Exportable Reports'];
+var riceScores=[21.6,20.25,21.0,18.0,16.2,16.2,17.07,12.96,12.96,16.2];
+
+new Chart(document.getElementById('chartRice'),{
+  type:'bar',
+  data:{
+    labels:riceFeatures,
+    datasets:[{
+      label:'RICE Score',data:riceScores,
+      backgroundColor:riceScores.map(function(s){return s>=20?G+'88':s>=16?AM+'88':B+'88'}),
+      borderColor:riceScores.map(function(s){return s>=20?G:s>=16?AM:B}),
+      borderWidth:1.5,borderRadius:4
+    }]
+  },
+  options:{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:'#1c1e2e'},ticks:{font:{size:9}}},y:{grid:{display:false},ticks:{font:{size:9}}}}
+  }
+});
+
+// Chart: Revenue Forecast
+new Chart(document.getElementById('chartRevenue'),{
+  type:'bar',
+  data:{
+    labels:['Year 1','Year 2','Year 3','Year 4'],
+    datasets:[
+      {label:'Schools (Ops)',data:[15,60,150,380],backgroundColor:G+'88',borderColor:G,borderWidth:1,borderRadius:4},
+      {label:'Schools (Intel)',data:[0,20,80,200],backgroundColor:B+'88',borderColor:B,borderWidth:1,borderRadius:4},
+      {label:'Parents (Premium)',data:[0,5,25,80],backgroundColor:P+'88',borderColor:P,borderWidth:1,borderRadius:4},
+      {label:'Universities + Employers',data:[0,0,10,60],backgroundColor:AM+'88',borderColor:AM,borderWidth:1,borderRadius:4},
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{font:{size:10}}}},
+    scales:{
+      x:{stacked:true,grid:{display:false},ticks:{font:{size:11}}},
+      y:{stacked:true,grid:{color:'#1c1e2e'},ticks:{font:{size:10}},title:{display:true,text:'$000s ARR (illustrative)',font:{size:10}}}
+    }
+  }
+});
+</script>
+</body>
+</html>
